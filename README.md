@@ -12,7 +12,7 @@
 
 ```bash
 # --- 基础信息 ---
-local app_id="1000以上"
+local app_id="和文件名一致，用于安装状态检测"
 local app_name="应用显示名称"
 local app_text="一句话简介，说明应用用途"
 local app_url="示例官网: https://github.com/kejilion/sh/edit/main/apps"
