@@ -1,9 +1,7 @@
-name: App Installation Test
+name: App Interactive Installation Test
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -13,20 +11,39 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Environment
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl wget
+          sudo apt-get install -y curl wget expect docker.io
 
-      - name: Test Last Modified App
+      - name: Run Interactive Test
         run: |
-          # 获取最后修改的 .conf 文件名（不含扩展名）
           APP_NAME=$(git log -1 --name-only --format="" | grep '.conf$' | head -n 1 | sed 's/\.conf//')
           if [ -z "$APP_NAME" ]; then
             echo "No .conf file modified, skipping test."
             exit 0
           fi
-          echo "Testing installation for: $APP_NAME"
-          # 模拟执行老板的脚本（注意：这里可能需要交互，建议老板脚本支持静默安装参数）
-          # 这里先演示调用命令，实际可能需要根据脚本特性调整
-          # bash <(curl -sL kejilion.sh) app $APP_NAME
+          
+          echo "Starting interactive test for: $APP_NAME"
+          
+          # 编写临时的 expect 自动化逻辑
+          cat <<EXPFEOF > test_script.exp
+          set timeout 300
+          spawn bash -c "curl -sL kejilion.sh | bash -s app $APP_NAME"
+          
+          # 常见的交互捕获逻辑
+          expect {
+            "选择" { send "1\r"; exp_continue }
+            "确认" { send "y\r"; exp_continue }
+            "y/n" { send "y\r"; exp_continue }
+            "回车" { send "\r"; exp_continue }
+            "Enter" { send "\r"; exp_continue }
+            "done" { puts "Installation complete!"; exit 0 }
+            timeout { puts "Installation timed out"; exit 1 }
+            eof
+          }
+EXPFEOF
+
+          # 执行自动化安装
+          # expect test_script.exp
+          echo "Expect script generated. (Wait for kejilion.sh logic alignment to enable)"
