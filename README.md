@@ -130,3 +130,7 @@ bash <(curl -sL kejilion.sh) app [文件名]
 * **安全自负**：本地应用未经审核，会以 root 身份执行，请只使用自己编写或信任的配置。
 * **版本要求**：需要支持 `~/apps-local` 的新版 `kejilion.sh`；KPanel 检测到旧脚本时会禁用本地应用的安装与管理按钮。
 * 自测通过后，把同一个 `.conf` 按第 5 节提交 PR，即可上架给所有用户。
+
+## 7. 应用使用说明
+
+* [Coolify：安装前的 SSH 公钥认证检查与配置](docs/coolify.md)
